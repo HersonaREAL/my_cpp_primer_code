@@ -1,9 +1,11 @@
 #ifndef c1503_H__
 #define c1503_H__
+#include <algorithm>
 #include <bits/c++config.h>
 #include <ostream>
 #include<string>
 #include<iostream>
+#include <utility>
 class Quote{
 public:
 	Quote() = default;
@@ -11,6 +13,8 @@ public:
 		bookNo(book),price(sales_price){}
 	std::string isbn() const { return bookNo; }
 	virtual double net_price(std::size_t n)const{ return n*price; }
+	virtual Quote* clone()const &{ return new Quote(*this); }
+	virtual Quote* clone()const &&{ return new Quote(std::move(*this)); }
 	virtual void debug() const;
 	virtual ~Quote() = default;
 private:
@@ -37,6 +41,10 @@ public:
 	Disc_quote(book,p,qty,disc){}
 	double net_price(std::size_t n) const override;
 	void debug() const override;
+	
+	Bulk_quote* clone()const & override{ return new Bulk_quote(*this); }
+	Bulk_quote* clone()const && override{ return new Bulk_quote(std::move(*this)); }
+
 };
 void Quote::debug()const {
 	std::cout<<"bookNo: "<<bookNo<<std::endl;
